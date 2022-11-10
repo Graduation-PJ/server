@@ -116,8 +116,11 @@ router.get('/logout', (req, res, next) =>
                 }
                 else
                 {
-                    req.session.destroy();
-                    res.status(201).send("success");
+                    req.session.destroy(() =>
+                    {
+                        res.clearCookie('connect.sid');
+                        res.status(200).send("success");
+                    });
                 }
             });
     }
