@@ -3,7 +3,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 
 const router = express.Router();
-router.use(cors());
+router.use(cors({origin:true, credentials: true}));
 router.use(express.json());
 router.use(bodyParser.urlencoded({extended : false}));
 
@@ -11,11 +11,12 @@ router.get('/', (req, res, next) =>
 {
     if(!req.user)
     {
+        console.log("error");
         next(new Error());
     }
     else
     {
-        
+        req.send(req.user);
     }
 });
 

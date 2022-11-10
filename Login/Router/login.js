@@ -9,7 +9,7 @@ import mysql from 'mysql2/promise';
 const LocalStrategy = passportLocal.Strategy;
 const router = express.Router();
 
-router.use(cors());
+router.use(cors({origin:true, credentials: true}));
 router.use(express.json());
 router.use(bodyParser.urlencoded({extended : false}));
 
@@ -28,12 +28,11 @@ async function getConnection()
     connection = await mysql.createConnection(connectInformation);
 }
 
-router.post('/process', passport.authenticate('local',
+router.post('/process', passport.authenticate('local'), (req, res) =>
 {
-    successRedirect: 'http://localhost:8080/login/success/',
-    failureRedirect: 'http://localhost:8080/login/fault',
-    failureMessage: true,
-}));
+    console.log(2);
+    res.send("success");
+});
 
 passport.use(new LocalStrategy(
     {
@@ -57,9 +56,9 @@ passport.use(new LocalStrategy(
             if(isAuthenticate)
             {
                 console.log(results[0]);
-                const userInformation = results[0];
-                console.log(done(null, userInformation));
-                // return (done(null, userInformation));
+                const userId = results[0].user_id;
+                console.log(userId);
+                return (done(null, userId));
             }
             else
             {
@@ -75,13 +74,13 @@ passport.use(new LocalStrategy(
 
 passport.serializeUser((user, done) =>
 {
-    console.log('serial');
+    console.log('serial', user);
     done(null, user);
 });
 
 passport.deserializeUser((id, done) =>
 {
-    console.log('deserial');
+    console.log('deserial', id);
     done(null, id);
 });
 

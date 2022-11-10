@@ -6,7 +6,7 @@ import mysql from 'mysql2';
 import fs from 'fs';
 
 const router = express.Router();
-router.use(cors());
+router.use(cors({origin:true, credentials: true}));
 router.use(express.json());
 router.use(bodyParser.urlencoded({extended : false}));
 
