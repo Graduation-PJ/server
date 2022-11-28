@@ -6,6 +6,7 @@ import passport from 'passport';
 import passportLocal from 'passport-local';
 import mysql from 'mysql2/promise';
 
+
 const LocalStrategy = passportLocal.Strategy;
 const router = express.Router();
 
@@ -28,10 +29,32 @@ async function getConnection()
     connection = await mysql.createConnection(connectInformation);
 }
 
-router.post('/process', passport.authenticate('local'), (req, res) =>
+router.post('/process', (req, res, next) =>
 {
-    console.log(2);
-    res.send("success");
+    passport.authenticate('local',(error, user, info) =>
+    {
+        if(error)
+        {
+            res.status(500).send("Server Error");
+            return;
+        }
+        if(!user)
+        {
+            res.status(401).send("Unauthorized");
+            return;
+        }
+        return req.login(user, loginError =>
+        {
+            if(loginError)
+            {
+                res.status(500).send("Server Error");
+            }
+            else
+            {
+                res.status(201).send("Success");
+            }
+        })
+    })(req, res, next);
 });
 
 passport.use(new LocalStrategy(
