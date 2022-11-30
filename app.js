@@ -10,6 +10,7 @@ import bodyParser from 'body-parser';
 import session from 'express-session';
 import passport from 'passport';
 import mysql from 'mysql2/promise';
+import boardRouter from "./Board/Router/boardRouter.js";
 
 const app = express();
 // app.use(cors());
@@ -25,7 +26,10 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.listen(8080);
+app.use('/board', boardRouter);
+app.listen(8080, function (){
+    console.log(("서버 시작"));
+});
 
 const connectInformation =
     {
