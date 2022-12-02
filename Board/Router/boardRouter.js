@@ -148,7 +148,34 @@ router.get('/myList', async (req, res, next) =>
         connection.end();
         res.status(500).send("error");
     }
-})
+});
+
+router.delete("/myList/delete", async (req, res, next) =>
+{
+    // http://localhost:8080/board/myList/delete?postId=게시글아이디
+    // console.log(req.body.postId);
+    const connection = await mysql.createConnection(connectInformation);
+    try
+    {
+        const query = `DELETE FROM BOARD WHERE board_id = "${req.body.postId}" AND user_id = "${req.user}"`;
+        const [result] = await connection.query(query);
+        if(result)
+        {
+            connection.end();
+            res.status(200).send("success");
+        }
+        else
+        {
+            throw new Error();
+        }
+    }
+    catch(error)
+    {
+        console.error(error);
+        connection.end();
+        res.status(500).send("error");
+    }
+});
 
 router.get('/list', async (req, res, next) =>
 {
@@ -162,6 +189,33 @@ router.get('/list', async (req, res, next) =>
         {
             connection.end();
             res.status(200).send(results);
+        }
+        else
+        {
+            throw new Error();
+        }
+    }
+    catch(error)
+    {
+        console.error(error);
+        connection.end();
+        res.status(500).send("error");
+    }
+});
+
+router.put('/myList/update', async (req, res, next) =>
+{
+    const connection = await mysql.createConnection(connectInformation);
+    try
+    {
+        const newTitle = req.body.title;
+        const newContent = req.body.content;
+        const query = `UPDATE BOARD SET title = "${newTitle}", content = "${newContent}" WHERE board_id = "${req.body.postId}" AND user_id = "${req.user}"`;
+        const [result] = await connection.query(query);
+        if(result)
+        {
+            connection.end();
+            res.status(200).send("success");
         }
         else
         {
