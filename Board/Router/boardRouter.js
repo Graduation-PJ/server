@@ -19,11 +19,6 @@ router.use(cors({origin: true, credentials: true}));
 router.use(express.json());
 router.use(bodyParser.urlencoded({extended : false}));
 
-router.get('/', (req, res, next) =>
-{
-    fs.createReadStream('./public/HTML/suggestion.html').pipe(res);
-});
-
 router.get('/content', async (req, res, next) =>
 {
     const connection = await mysql.createConnection(connectInformation);
@@ -131,7 +126,6 @@ router.get('/myList', async (req, res, next) =>
     {
         const query = `SELECT * FROM BOARD WHERE user_id = "${req.user}"`;
         const [results, fields] = await connection.query(query);
-        console.log(results);
         if(results)
         {
             connection.end();
@@ -184,7 +178,6 @@ router.get('/list', async (req, res, next) =>
     {
         const query = `SELECT * FROM BOARD as B, USER as U where B.user_id=U.user_id`;
         const [results, fields] = await connection.query(query);
-        console.log(results);
         if(results)
         {
             connection.end();

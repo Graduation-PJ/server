@@ -11,6 +11,8 @@ import session from 'express-session';
 import passport from 'passport';
 import mysql from 'mysql2/promise';
 import boardRouter from "./Board/Router/boardRouter.js";
+import contributionRouter from "./Contribution/Router/contributionRouter.js";
+import commentRouter from "./Comment/Router/commentRouter.js";
 
 const app = express();
 // app.use(cors());
@@ -47,6 +49,8 @@ const connectInformation =
 app.use('/login', loginRouter);
 app.use('/home', homeRouter);
 app.use('/signUp', signUpRouter);
+app.use('/contributionData', contributionRouter);
+app.use('/comment', commentRouter);
 
 app.get('/', (req, res, next) => {
     console.log(4);
@@ -56,6 +60,7 @@ app.get('/', (req, res, next) => {
 
 app.get('/getUser', async (req, res) => {
     const connection = await mysql.createConnection(connectInformation);
+    console.log("getuser: ", req.user);
     const query = `SELECT user_id, email, nickname, intro_comment FROM USER WHERE user_id = '${req.user}'`;
     try {
         const [results, fields] = await connection.query(query);
@@ -64,7 +69,6 @@ app.get('/getUser', async (req, res) => {
         res.status(403).send("error");
     }
 });
-
 
 // 로그인 안 한 상태에서 URL에 접근하면 에러 뜨게 함.
 // (다른 미들웨어에서 에러가 발생하면, next() 메소드를 통해서 에러를 전파할 수 있는데, 이런 경우 최종적으로 
