@@ -124,7 +124,7 @@ router.get('/myList', async (req, res, next) =>
     const connection = await mysql.createConnection(connectInformation);
     try
     {
-        const query = `SELECT * FROM BOARD WHERE user_id = "${req.user}"`;
+        const query = `SELECT * FROM BOARD, USER WHERE BOARD.user_id = "${req.user}" AND USER.user_id = BOARD.user_id`;
         const [results, fields] = await connection.query(query);
         if(results)
         {

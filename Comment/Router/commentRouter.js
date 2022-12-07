@@ -23,7 +23,10 @@ router.post('/', async (req, res, next) => {
     console.log(req.body);
     const board_id = req.body.boardId;
     console.log(board_id);
-    const query = `SELECT * FROM COMMENT WHERE board_id = "${board_id}"`;
+    const query =
+        `SELECT c.write_time, c.board_id, c.content, u.nickname 
+         FROM COMMENT as c, USER as u 
+         WHERE board_id = "${board_id}" AND c.user_id = u.user_id`;
     const connection = await mysql.createConnection(connectInformation);
     try {
         const [result, field] = await connection.query(query);
