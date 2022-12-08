@@ -223,6 +223,32 @@ router.put('/myList/update', async (req, res, next) =>
     }
 });
 
+router.put('/update_hits', async (req, res, next) =>
+{
+    const connection = await mysql.createConnection(connectInformation);
+    try
+    {
+        const hits = req.body.hits;
+        const query = `UPDATE BOARD SET hit_count="${hits}" WHERE board_id = "${req.body.postId}"`;
+        const [result] = await connection.query(query);
+        if(result)
+        {
+            connection.end();
+            res.status(200).send("success");
+        }
+        else
+        {
+            throw new Error();
+        }
+    }
+    catch(error)
+    {
+        console.error(error);
+        connection.end();
+        res.status(500).send("error");
+    }
+});
+
 router.post('/writing', async (req, res, next) =>
 {
     console.log(req.body);
