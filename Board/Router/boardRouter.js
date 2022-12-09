@@ -125,12 +125,13 @@ router.get('/myList', async (req, res, next) =>
     try
     {
         const query =
-            `SELECT * FROM BOARD, USER, COMMENT 
-             WHERE BOARD.user_id = "${req.user}" AND USER.user_id = BOARD.user_id AND USER.user_id = COMMENT.user_id
+            `
+            SELECT * FROM USER NATURAL JOIN BOARD WHERE user_id = "${req.user}"
              `;
         const [results, fields] = await connection.query(query);
-        if(results)
+        if(results.length !== 0)
         {
+            console.log("myList", results.length);
             connection.end();
             res.status(200).send(results);
         }
